@@ -4,7 +4,7 @@ import os
 from vagrant import Vagrant
 
 
-class VagrantControl(Vagrant):
+class Control(Vagrant):
 
     def list(self):
         containers = list()

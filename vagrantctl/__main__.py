@@ -3,7 +3,7 @@
 import sys
 import os
 import argparse
-from control import VagrantControl
+from core import Control
 
 
 def stype(bytestring):
@@ -58,10 +58,9 @@ def run(args):
         root = args.base_directory
 
     if hasattr(args, 'verbose') and args.verbose:
-        vagrantctl = VagrantControl(root=root, quiet_stdout=False,
-                                    quiet_stderr=False)
+        vagrantctl = Control(root=root, quiet_stdout=False, quiet_stderr=False)
     else:
-        vagrantctl = VagrantControl(root=root)
+        vagrantctl = Control(root=root)
 
     if hasattr(args, 'list'):
         for vm in vagrantctl.list():

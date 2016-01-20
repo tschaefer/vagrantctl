@@ -7,11 +7,11 @@ setup(
     version='0.0.1',
     packages=['vagrantctl'],
     install_requires=[],
-    entry_points={'console_scripts': ['vagrantctl=vagrant:main']},
+    entry_points={'console_scripts': ['vagrantctl=vagrantctl.__main__:main']},
     author='Tobias Schäfer',
     author_email='vagrantctl@blackoxorg',
     url='https://github.com/tschaefer/vagrantctl',
-    description="vagrantctl - Control the Vagrant containers.",
+    description="vagrantctl - Control the Vagrant virtual machines.",
     license='BSD',
     include_package_data=True,
     zip_safe=False

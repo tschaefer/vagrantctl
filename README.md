@@ -1,2 +1,2 @@
 # vagrantctl
-vagrantctl - Control the Vagrant containers
+vagrantctl - Control the Vagrant virtual machines
