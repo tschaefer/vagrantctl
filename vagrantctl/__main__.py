@@ -51,16 +51,29 @@ def parse_options():
     return parser.parse_args()
 
 
-def run(args):
+def _build_root(args):
+    root = args.base_directory
     if hasattr(args, 'vm'):
-        root = os.path.join(args.base_directory, args.vm)
-    else:
-        root = args.base_directory
+        root = os.path.join(root, args.vm)
+    return root
 
+
+def _build_obj(args, root):
     if hasattr(args, 'verbose') and args.verbose:
-        vagrantctl = Control(root=root, quiet_stdout=False, quiet_stderr=False)
-    else:
-        vagrantctl = Control(root=root)
+        return Control(root=root, quiet_stdout=False, quiet_stderr=False)
+    return Control(root=root)
+
+
+def _vm_exists(root):
+    return os.path.exists(os.path.join(root, 'Vagrantfile'))
+
+
+def run(args):
+    root = _build_root(args)
+    vagrantctl = _build_obj(args, root)
+    if hasattr(args, 'vm') and not _vm_exists(root):
+        print "no such vm '%s'" % os.path.basename(root)
+        sys.exit(1)
 
     if hasattr(args, 'list'):
         for vm in vagrantctl.list():
@@ -72,6 +85,8 @@ def run(args):
     elif hasattr(args, 'status'):
         for status in vagrantctl.status():
             print status[1]
+
+    sys.exit(0)
 
 
 def main():
