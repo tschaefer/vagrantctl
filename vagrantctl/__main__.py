@@ -3,6 +3,7 @@
 import sys
 import os
 import argparse
+from ConfigParser import SafeConfigParser
 from core import Control
 
 
@@ -11,9 +12,19 @@ def stype(bytestring):
     return unicode_string
 
 
-def parse_options():
-    base_directory = os.getcwd()
+def parse_config():
+    config_file = os.path.join(os.environ['HOME'], '.vagrantctl')
+    parser = SafeConfigParser()
+    parser.read(config_file)
+    if parser.has_option('vagrantctl', 'base-directory'):
+        base_directory = parser.get('vagrantctl', 'base-directory')
+    else:
+        base_directory = os.getcwd()
 
+    return os.path.abspath(base_directory)
+
+
+def parse_options(base_directory):
     parser = argparse.ArgumentParser(description='vagrantctl')
     parser.add_argument('-b', '--base-directory',
                         type=unicode,
@@ -72,7 +83,7 @@ def run(args):
     root = _build_root(args)
     vagrantctl = _build_obj(args, root)
     if hasattr(args, 'vm') and not _vm_exists(root):
-        print "no such vm '%s'" % os.path.basename(root)
+        print "no such vm '%s'" % args.vm
         sys.exit(1)
 
     if hasattr(args, 'list'):
@@ -90,7 +101,7 @@ def run(args):
 
 
 def main():
-    args = parse_options()
+    args = parse_options(parse_config())
     run(args)
 
 
