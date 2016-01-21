@@ -14,11 +14,11 @@ def stype(bytestring):
 
 def parse_config():
     config_file = os.path.join(os.environ['HOME'], '.vagrantctl')
-    parser = SafeConfigParser()
-    parser.read(config_file)
-    if parser.has_option('vagrantctl', 'base-directory'):
+    try:
+        parser = SafeConfigParser()
+        parser.read(config_file)
         base_directory = parser.get('vagrantctl', 'base-directory')
-    else:
+    except:
         base_directory = os.getcwd()
 
     return os.path.abspath(base_directory)
