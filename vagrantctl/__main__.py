@@ -59,6 +59,12 @@ def parse_options(base_directory):
                                type=stype,
                                help='vm name')
 
+    parser_ssh_config = subparsers.add_parser('ssh-config')
+    parser_ssh_config.set_defaults(ssh_config=True)
+    parser_ssh_config.add_argument('vm',
+                                   type=stype,
+                                   help='vm name')
+
     return parser.parse_args()
 
 
@@ -83,7 +89,7 @@ def run(args):
     root = _build_root(args)
     vagrantctl = _build_obj(args, root)
     if hasattr(args, 'vm') and not _vm_exists(root):
-        print "no such vm '%s'" % args.vm
+        sys.stderr.write("no such vm '%s'" % args.vm)
         sys.exit(1)
 
     if hasattr(args, 'list'):
@@ -93,9 +99,15 @@ def run(args):
         vagrantctl.up()
     elif hasattr(args, 'halt'):
         vagrantctl.halt()
-    elif hasattr(args, 'status'):
+    if hasattr(args, 'status'):
         for status in vagrantctl.status():
             print status[1]
+    elif hasattr(args, 'ssh_config'):
+        try:
+            print vagrantctl.ssh_config()
+        except:
+            sys.stderr.write("vm '%s' not up" % args.vm)
+            sys.exit(1)
 
     sys.exit(0)
 
