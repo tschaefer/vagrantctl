@@ -3,17 +3,17 @@ vagrantctl - Control the Vagrant virtual machines
 
 ## Introduction
 **vagrantctl** is a simple script to list, start and stop Vagrant managed virtual
-machines in a given subfolder.
+machines in a given subfolder. Additional get the status and ssh configuration.
 
 ## Usage
 ```
 $ vagrantctl -h
-usage: vagrantctl [-h] [-b BASE_DIRECTORY] {list,up,halt,status} ...
+usage: vagrantctl [-h] [-b BASE_DIRECTORY] {list,up,halt,status,ssh-config} ...
 
 vagrantctl
 
 positional arguments:
-  {list,up,halt,status}
+  {list,up,halt,status,ssh-config}
 
   optional arguments:
     -h, --help            show this help message and exit
@@ -21,7 +21,7 @@ positional arguments:
                           vm base directory
 ```
 
-The base-directory can also be configured with in a configuration file
+The base-directory can also be configured within a configuration file
 *.vagrantctl* located in the user home directory.
 ```
 [vagrantctl]
