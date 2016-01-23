@@ -68,29 +68,34 @@ def parse_options(base_directory):
     return parser.parse_args()
 
 
-def _build_root(args):
+def build_vm_root(args):
     root = args.base_directory
     if hasattr(args, 'vm'):
         root = os.path.join(root, args.vm)
     return root
 
 
-def _build_obj(args, root):
+def build_control_obj(args, root):
     if hasattr(args, 'verbose') and args.verbose:
         return Control(root=root, quiet_stdout=False, quiet_stderr=False)
     return Control(root=root)
 
 
-def _vm_exists(root):
+def vm_exists(root):
     return os.path.exists(os.path.join(root, 'Vagrantfile'))
 
 
+def print_error_exit(msg):
+    err = "%s: %s\n" % (os.path.basename(sys.argv[0]), msg)
+    sys.stderr.write(err)
+    sys.exit(1)
+
+
 def run(args):
-    root = _build_root(args)
-    vagrantctl = _build_obj(args, root)
-    if hasattr(args, 'vm') and not _vm_exists(root):
-        sys.stderr.write("no such vm '%s'" % args.vm)
-        sys.exit(1)
+    root = build_vm_root(args)
+    vagrantctl = build_control_obj(args, root)
+    if hasattr(args, 'vm') and not vm_exists(root):
+        print_error_exit("no such vm '%s'" % args.vm)
 
     if hasattr(args, 'list'):
         for vm in vagrantctl.list():
@@ -106,8 +111,7 @@ def run(args):
         try:
             print vagrantctl.ssh_config()
         except:
-            sys.stderr.write("vm '%s' not up" % args.vm)
-            sys.exit(1)
+            print_error_exit("vm '%s' not up" % args.vm)
 
     sys.exit(0)
 
