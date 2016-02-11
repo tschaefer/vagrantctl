@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import subprocess
 from vagrant import Vagrant
 
 
@@ -22,3 +23,6 @@ class Control(Vagrant):
 
     def snapshot_go(self, name):
         self._call_vagrant_command(['snapshot', 'go', name])
+
+    def config(self):
+        return os.path.join(self.root, 'Vagrantfile')

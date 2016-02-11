@@ -30,6 +30,10 @@ def parse_options(base_directory):
                         type=unicode,
                         default=base_directory,
                         help='vm base directory')
+    parser.add_argument('-v', '--verbose',
+                        action='store_true',
+                        help='verbose output')
+
     subparsers = parser.add_subparsers()
 
     parser_list = subparsers.add_parser('list')
@@ -40,18 +44,30 @@ def parse_options(base_directory):
     parser_up.add_argument('vm',
                            type=stype,
                            help='vm name')
-    parser_up.add_argument('-v', '--verbose',
-                           action='store_true',
-                           help='verbose output')
 
     parser_halt = subparsers.add_parser('halt')
     parser_halt.set_defaults(halt=True)
     parser_halt.add_argument('vm',
                              type=stype,
                              help='vm name')
-    parser_halt.add_argument('-v', '--verbose',
-                             action='store_true',
-                             help='verbose output')
+
+    parser_suspend = subparsers.add_parser('suspend')
+    parser_suspend.set_defaults(suspend=True)
+    parser_suspend.add_argument('vm',
+                                type=stype,
+                                help='vm name')
+
+    parser_resume = subparsers.add_parser('resume')
+    parser_resume.set_defaults(resume=True)
+    parser_resume.add_argument('vm',
+                               type=stype,
+                               help='vm name')
+
+    parser_reload = subparsers.add_parser('reload')
+    parser_reload.set_defaults(reload=True)
+    parser_reload.add_argument('vm',
+                               type=stype,
+                               help='vm name')
 
     parser_status = subparsers.add_parser('status')
     parser_status.set_defaults(status=True)
@@ -65,30 +81,38 @@ def parse_options(base_directory):
                                    type=stype,
                                    help='vm name')
 
-    parser_snapshot = subparsers.add_parser('snapshot')
-    parser_snapshot.set_defaults(snapshot=True)
-    parser_snapshot.add_argument('-l', '--list',
-                                 action='store_true',
-                                 dest='snapshot_list',
-                                 help='list snapshots')
-    parser_snapshot.add_argument('-t', '--take',
-                                 nargs=1,
-                                 metavar='SNAPSHOT_NAME',
-                                 dest='snapshot_take',
-                                 help='take named snapshot')
-    parser_snapshot.add_argument('-d', '--delete',
-                                 nargs=1,
-                                 metavar='SNAPSHOT_NAME',
-                                 dest='snapshot_delete',
-                                 help='delete named snapshot')
-    parser_snapshot.add_argument('-g', '--go',
-                                 nargs=1,
-                                 metavar='SNAPSHOT_NAME',
-                                 dest='snapshot_go',
-                                 help='go to named snapshot')
-    parser_snapshot.add_argument('vm',
-                                 type=stype,
-                                 help='vm name')
+    parser_config = subparsers.add_parser('config')
+    parser_config.set_defaults(config=True)
+    parser_config.add_argument('vm',
+                               type=stype,
+                               help='vm name')
+
+    if 'vagrant-vbox-snapshot' in \
+            [plugin.name for plugin in Control().plugin_list()]:
+        parser_snapshot = subparsers.add_parser('snapshot')
+        parser_snapshot.set_defaults(snapshot=True)
+        parser_snapshot.add_argument('-l', '--list',
+                                     action='store_true',
+                                     dest='snapshot_list',
+                                     help='list snapshots')
+        parser_snapshot.add_argument('-t', '--take',
+                                     nargs=1,
+                                     metavar='SNAPSHOT_NAME',
+                                     dest='snapshot_take',
+                                     help='take named snapshot')
+        parser_snapshot.add_argument('-d', '--delete',
+                                     nargs=1,
+                                     metavar='SNAPSHOT_NAME',
+                                     dest='snapshot_delete',
+                                     help='delete named snapshot')
+        parser_snapshot.add_argument('-g', '--go',
+                                     nargs=1,
+                                     metavar='SNAPSHOT_NAME',
+                                     dest='snapshot_go',
+                                     help='go to named snapshot')
+        parser_snapshot.add_argument('vm',
+                                     type=stype,
+                                     help='vm name')
 
     return parser.parse_args()
 
@@ -129,6 +153,12 @@ def run(args):
         vagrantctl.up()
     elif hasattr(args, 'halt'):
         vagrantctl.halt()
+    elif hasattr(args, 'suspend'):
+        vagrantctl.suspend()
+    elif hasattr(args, 'resume'):
+        vagrantctl.resume()
+    elif hasattr(args, 'reload'):
+        vagrantctl.reload()
     elif hasattr(args, 'status'):
         for status in vagrantctl.status():
             print status[1]
@@ -148,6 +178,8 @@ def run(args):
             snapshots = vagrantctl.snapshot_list()
             for snapshot in snapshots[1:]:
                 print snapshot
+    elif hasattr(args, 'config'):
+        print vagrantctl.config()
 
     sys.exit(0)
 
