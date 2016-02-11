@@ -13,3 +13,12 @@ class Control(Vagrant):
                 if file == 'Vagrantfile':
                     vms.append(os.path.basename(root))
         return vms
+
+    def snapshot_take(self, name):
+        self._call_vagrant_command(['snapshot', 'take', name])
+
+    def snapshot_delete(self, name):
+        self._call_vagrant_command(['snapshot', 'delete', name])
+
+    def snapshot_go(self, name):
+        self._call_vagrant_command(['snapshot', 'go', name])

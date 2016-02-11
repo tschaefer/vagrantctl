@@ -65,6 +65,31 @@ def parse_options(base_directory):
                                    type=stype,
                                    help='vm name')
 
+    parser_snapshot = subparsers.add_parser('snapshot')
+    parser_snapshot.set_defaults(snapshot=True)
+    parser_snapshot.add_argument('-l', '--list',
+                                 action='store_true',
+                                 dest='snapshot_list',
+                                 help='list snapshots')
+    parser_snapshot.add_argument('-t', '--take',
+                                 nargs=1,
+                                 metavar='SNAPSHOT_NAME',
+                                 dest='snapshot_take',
+                                 help='take named snapshot')
+    parser_snapshot.add_argument('-d', '--delete',
+                                 nargs=1,
+                                 metavar='SNAPSHOT_NAME',
+                                 dest='snapshot_delete',
+                                 help='delete named snapshot')
+    parser_snapshot.add_argument('-g', '--go',
+                                 nargs=1,
+                                 metavar='SNAPSHOT_NAME',
+                                 dest='snapshot_go',
+                                 help='go to named snapshot')
+    parser_snapshot.add_argument('vm',
+                                 type=stype,
+                                 help='vm name')
+
     return parser.parse_args()
 
 
@@ -104,7 +129,7 @@ def run(args):
         vagrantctl.up()
     elif hasattr(args, 'halt'):
         vagrantctl.halt()
-    if hasattr(args, 'status'):
+    elif hasattr(args, 'status'):
         for status in vagrantctl.status():
             print status[1]
     elif hasattr(args, 'ssh_config'):
@@ -112,6 +137,17 @@ def run(args):
             print vagrantctl.ssh_config()
         except:
             print_error_exit("vm '%s' not up" % args.vm)
+    elif hasattr(args, 'snapshot'):
+        if args.snapshot_take:
+            vagrantctl.snapshot_take(args.snapshot_take.pop())
+        elif args.snapshot_delete:
+            vagrantctl.snapshot_delete(args.snapshot_delete.pop())
+        elif args.snapshot_go:
+            vagrantctl.snapshot_go(args.snapshot_go.pop())
+        else:
+            snapshots = vagrantctl.snapshot_list()
+            for snapshot in snapshots[1:]:
+                print snapshot
 
     sys.exit(0)
 
