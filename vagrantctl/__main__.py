@@ -83,6 +83,10 @@ def parse_options(base_directory):
 
     parser_config = subparsers.add_parser('config')
     parser_config.set_defaults(config=True)
+    parser_config.add_argument('-s', '--show',
+                               action='store_true',
+                               dest='config_show',
+                               help='output Vagrantfile')
     parser_config.add_argument('vm',
                                type=stype,
                                help='vm name')
@@ -179,7 +183,11 @@ def run(args):
             for snapshot in snapshots[1:]:
                 print snapshot
     elif hasattr(args, 'config'):
-        print vagrantctl.config()
+        if args.config_show:
+            with open(vagrantctl.config()) as config:
+                print config.read()
+        else:
+            print vagrantctl.config()
 
     sys.exit(0)
 
