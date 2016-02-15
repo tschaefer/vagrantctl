@@ -29,7 +29,7 @@ def parse_options(base_directory):
     parser.add_argument('-b', '--base-directory',
                         type=unicode,
                         default=base_directory,
-                        help='vm base directory')
+                        help='VM base directory')
     parser.add_argument('-v', '--verbose',
                         action='store_true',
                         help='verbose output')
@@ -41,45 +41,45 @@ def parse_options(base_directory):
 
     parser_up = subparsers.add_parser('up')
     parser_up.set_defaults(up=True)
-    parser_up.add_argument('vm',
+    parser_up.add_argument('VM',
                            type=stype,
-                           help='vm name')
+                           help='VM name')
 
     parser_halt = subparsers.add_parser('halt')
     parser_halt.set_defaults(halt=True)
-    parser_halt.add_argument('vm',
+    parser_halt.add_argument('VM',
                              type=stype,
-                             help='vm name')
+                             help='VM name')
 
     parser_suspend = subparsers.add_parser('suspend')
     parser_suspend.set_defaults(suspend=True)
-    parser_suspend.add_argument('vm',
+    parser_suspend.add_argument('VM',
                                 type=stype,
-                                help='vm name')
+                                help='VM name')
 
     parser_resume = subparsers.add_parser('resume')
     parser_resume.set_defaults(resume=True)
-    parser_resume.add_argument('vm',
+    parser_resume.add_argument('VM',
                                type=stype,
-                               help='vm name')
+                               help='VM name')
 
     parser_reload = subparsers.add_parser('reload')
     parser_reload.set_defaults(reload=True)
-    parser_reload.add_argument('vm',
+    parser_reload.add_argument('VM',
                                type=stype,
-                               help='vm name')
+                               help='VM name')
 
     parser_status = subparsers.add_parser('status')
     parser_status.set_defaults(status=True)
-    parser_status.add_argument('vm',
+    parser_status.add_argument('VM',
                                type=stype,
-                               help='vm name')
+                               help='VM name')
 
     parser_ssh_config = subparsers.add_parser('ssh-config')
     parser_ssh_config.set_defaults(ssh_config=True)
-    parser_ssh_config.add_argument('vm',
+    parser_ssh_config.add_argument('VM',
                                    type=stype,
-                                   help='vm name')
+                                   help='VM name')
 
     parser_config = subparsers.add_parser('config')
     parser_config.set_defaults(config=True)
@@ -87,9 +87,9 @@ def parse_options(base_directory):
                                action='store_true',
                                dest='config_show',
                                help='output Vagrantfile')
-    parser_config.add_argument('vm',
+    parser_config.add_argument('VM',
                                type=stype,
-                               help='vm name')
+                               help='VM name')
 
     if 'vagrant-vbox-snapshot' in \
             [plugin.name for plugin in Control().plugin_list()]:
@@ -114,17 +114,17 @@ def parse_options(base_directory):
                                      metavar='SNAPSHOT_NAME',
                                      dest='snapshot_go',
                                      help='go to named snapshot')
-        parser_snapshot.add_argument('vm',
+        parser_snapshot.add_argument('VM',
                                      type=stype,
-                                     help='vm name')
+                                     help='VM name')
 
     return parser.parse_args()
 
 
 def build_vm_root(args):
     root = args.base_directory
-    if hasattr(args, 'vm'):
-        root = os.path.join(root, args.vm)
+    if hasattr(args, 'VM'):
+        root = os.path.join(root, args.VM)
     return root
 
 
@@ -147,8 +147,8 @@ def print_error_exit(msg):
 def run(args):
     root = build_vm_root(args)
     vagrantctl = build_control_obj(args, root)
-    if hasattr(args, 'vm') and not vm_exists(root):
-        print_error_exit("no such vm '%s'" % args.vm)
+    if hasattr(args, 'VM') and not vm_exists(root):
+        print_error_exit("no such VM '%s'" % args.VM)
 
     if hasattr(args, 'list'):
         for vm in vagrantctl.list():
@@ -170,7 +170,7 @@ def run(args):
         try:
             print vagrantctl.ssh_config()
         except:
-            print_error_exit("vm '%s' not up" % args.vm)
+            print_error_exit("VM '%s' not up" % args.VM)
     elif hasattr(args, 'snapshot'):
         if args.snapshot_take:
             vagrantctl.snapshot_take(args.snapshot_take.pop())
