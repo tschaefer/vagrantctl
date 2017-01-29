@@ -90,31 +90,28 @@ def parse_options(base_directory):
     parser_config.add_argument('VM',
                                type=stype,
                                help='VM name')
-
-    if 'vagrant-vbox-snapshot' in \
-            [plugin.name for plugin in Control().plugin_list()]:
-        parser_snapshot = subparsers.add_parser('snapshot')
-        parser_snapshot.set_defaults(snapshot=True)
-        parser_snapshot.add_argument('-l', '--list',
-                                     action='store_true',
-                                     dest='snapshot_list',
-                                     help='list snapshots')
-        parser_snapshot.add_argument('-t', '--take',
-                                     nargs=1,
-                                     metavar='SNAPSHOT_NAME',
-                                     dest='snapshot_take',
-                                     help='take named snapshot')
-        parser_snapshot.add_argument('-d', '--delete',
-                                     nargs=1,
-                                     metavar='SNAPSHOT_NAME',
-                                     dest='snapshot_delete',
-                                     help='delete named snapshot')
-        parser_snapshot.add_argument('-g', '--go',
-                                     nargs=1,
-                                     metavar='SNAPSHOT_NAME',
-                                     dest='snapshot_go',
-                                     help='go to named snapshot')
-        parser_snapshot.add_argument('VM',
+    parser_snapshot = subparsers.add_parser('snapshot')
+    parser_snapshot.set_defaults(snapshot=True)
+    parser_snapshot.add_argument('-l', '--list',
+                                 action='store_true',
+                                 dest='snapshot_list',
+                                 help='list snapshots')
+    parser_snapshot.add_argument('-t', '--take',
+                                 nargs=1,
+                                 metavar='SNAPSHOT_NAME',
+                                 dest='snapshot_take',
+                                 help='take named snapshot')
+    parser_snapshot.add_argument('-d', '--delete',
+                                 nargs=1,
+                                 metavar='SNAPSHOT_NAME',
+                                 dest='snapshot_delete',
+                                 help='delete named snapshot')
+    parser_snapshot.add_argument('-g', '--go',
+                                 nargs=1,
+                                 metavar='SNAPSHOT_NAME',
+                                 dest='snapshot_go',
+                                 help='go to named snapshot')
+    parser_snapshot.add_argument('VM',
                                      type=stype,
                                      help='VM name')
 
