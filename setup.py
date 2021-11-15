@@ -5,7 +5,7 @@ from setuptools import setup
 setup(
     name='vagrantctl',
     version='0.0.1',
-    packages=['vagrantctl'],
+    packages=['vagrantctl', 'vagrantctl.core'],
     install_requires=['python-vagrant >= 0.5.10'],
     entry_points={'console_scripts': ['vagrantctl=vagrantctl.__main__:main']},
     author='Tobias Schäfer',

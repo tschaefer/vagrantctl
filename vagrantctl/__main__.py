@@ -3,19 +3,14 @@
 import sys
 import os
 import argparse
-from ConfigParser import SafeConfigParser
-from core import Control
-
-
-def stype(bytestring):
-    unicode_string = bytestring.decode(sys.getfilesystemencoding())
-    return unicode_string
+from configparser import ConfigParser
+from vagrantctl.core.control import Control
 
 
 def parse_config():
     config_file = os.path.join(os.environ['HOME'], '.vagrantctl')
     try:
-        parser = SafeConfigParser()
+        parser = ConfigParser()
         parser.read(config_file)
         base_directory = parser.get('vagrantctl', 'base-directory')
     except:
@@ -27,7 +22,6 @@ def parse_config():
 def parse_options(base_directory):
     parser = argparse.ArgumentParser(description='vagrantctl')
     parser.add_argument('-b', '--base-directory',
-                        type=unicode,
                         default=base_directory,
                         help='VM base directory')
     parser.add_argument('-v', '--verbose',
@@ -42,43 +36,36 @@ def parse_options(base_directory):
     parser_up = subparsers.add_parser('up')
     parser_up.set_defaults(up=True)
     parser_up.add_argument('VM',
-                           type=stype,
                            help='VM name')
 
     parser_halt = subparsers.add_parser('halt')
     parser_halt.set_defaults(halt=True)
     parser_halt.add_argument('VM',
-                             type=stype,
                              help='VM name')
 
     parser_suspend = subparsers.add_parser('suspend')
     parser_suspend.set_defaults(suspend=True)
     parser_suspend.add_argument('VM',
-                                type=stype,
                                 help='VM name')
 
     parser_resume = subparsers.add_parser('resume')
     parser_resume.set_defaults(resume=True)
     parser_resume.add_argument('VM',
-                               type=stype,
                                help='VM name')
 
     parser_reload = subparsers.add_parser('reload')
     parser_reload.set_defaults(reload=True)
     parser_reload.add_argument('VM',
-                               type=stype,
                                help='VM name')
 
     parser_status = subparsers.add_parser('status')
     parser_status.set_defaults(status=True)
     parser_status.add_argument('VM',
-                               type=stype,
                                help='VM name')
 
     parser_ssh_config = subparsers.add_parser('ssh-config')
     parser_ssh_config.set_defaults(ssh_config=True)
     parser_ssh_config.add_argument('VM',
-                                   type=stype,
                                    help='VM name')
 
     parser_config = subparsers.add_parser('config')
@@ -88,7 +75,6 @@ def parse_options(base_directory):
                                dest='config_show',
                                help='output Vagrantfile')
     parser_config.add_argument('VM',
-                               type=stype,
                                help='VM name')
     parser_snapshot = subparsers.add_parser('snapshot')
     parser_snapshot.set_defaults(snapshot=True)
@@ -112,8 +98,7 @@ def parse_options(base_directory):
                                  dest='snapshot_go',
                                  help='go to named snapshot')
     parser_snapshot.add_argument('VM',
-                                     type=stype,
-                                     help='VM name')
+                                 help='VM name')
 
     return parser.parse_args()
 
@@ -149,7 +134,7 @@ def run(args):
 
     if hasattr(args, 'list'):
         for vm in vagrantctl.list():
-            print vm
+            print(vm)
     elif hasattr(args, 'up'):
         vagrantctl.up()
     elif hasattr(args, 'halt'):
@@ -162,10 +147,10 @@ def run(args):
         vagrantctl.reload()
     elif hasattr(args, 'status'):
         for status in vagrantctl.status():
-            print status[1]
+            print(status[1])
     elif hasattr(args, 'ssh_config'):
         try:
-            print vagrantctl.ssh_config()
+            print(vagrantctl.ssh_config())
         except:
             print_error_exit("VM '%s' not up" % args.VM)
     elif hasattr(args, 'snapshot'):
@@ -178,13 +163,13 @@ def run(args):
         else:
             snapshots = vagrantctl.snapshot_list()
             for snapshot in snapshots[1:]:
-                print snapshot
+                print(snapshot)
     elif hasattr(args, 'config'):
         if args.config_show:
             with open(vagrantctl.config()) as config:
-                print config.read()
+                print(config.read())
         else:
-            print vagrantctl.config()
+            print(vagrantctl.config())
 
     sys.exit(0)
 
